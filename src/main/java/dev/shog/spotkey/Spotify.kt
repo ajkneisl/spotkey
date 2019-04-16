@@ -54,8 +54,6 @@ object Spotify {
         SPOTIFY_API.refreshToken = auth.refreshToken
         ready = true
 
-        HotKeyHandler.init()
-
         LOGGER.info("Successfully signed into Spotify with user ${getUserData().email}.")
     }
 

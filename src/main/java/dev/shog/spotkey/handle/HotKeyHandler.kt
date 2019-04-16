@@ -1,57 +1,27 @@
 package dev.shog.spotkey.handle
 
 import com.tulskiy.keymaster.common.Provider
-import dev.shog.spotkey.Spotify
-import dev.shog.spotkey.isCurrentlyPlaying
-import org.slf4j.LoggerFactory
+import dev.shog.spotkey.handle.HotKeyLoader.hotKeys
 import java.awt.Toolkit
-import javax.swing.KeyStroke
 
 
 /**
  * Manages hot keys throughout spotify manager
  */
 object HotKeyHandler {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)!!
+    /**
+     * The current keymaster provider.
+     */
+    private val PROVIDER = Provider.getCurrentProvider(true)
 
     /**
-     * All of the keybinded actions
+     * Refreshes the currently loaded keybinds.
      */
-    enum class Actions(val key: KeyStroke, val unit: () -> Unit) {
-        NEXT_SONG(KeyStroke.getKeyStroke("control shift N"), {
-            if (isCurrentlyPlaying())
-                Spotify.SPOTIFY_API.skipUsersPlaybackToNextTrack().build().execute()
-            else beep()
-        }),
+    fun refreshCurrentlyLoaded() {
+        PROVIDER.reset()
 
-        PREVIOUS_SONG(KeyStroke.getKeyStroke("control shift L"), {
-            if (isCurrentlyPlaying())
-                Spotify.SPOTIFY_API.skipUsersPlaybackToPreviousTrack().build().execute()
-            else beep()
-        }),
-
-        NEXT_PLAYLIST(KeyStroke.getKeyStroke("control shift alt N"), {
-
-        }),
-
-        PREVIOUS_PLAYLIST(KeyStroke.getKeyStroke("control shift alt L"), {
-
-        }),
-    }
-
-    /**
-     * Initializes all of the keybinds.
-     *
-     * Useful to allow init only when the client is ready.
-     */
-    fun init() {
-        val provider = Provider.getCurrentProvider(true)
-
-        for (action in Actions.values()) {
-            provider.register(action.key) {
-                LOGGER.debug("Running hotkey ${action.key}...")
-                action.unit.invoke()
-            }
+        hotKeys.forEach { k ->
+            PROVIDER.register(k.getKeyStroke()) { k.execute() }
         }
     }
 

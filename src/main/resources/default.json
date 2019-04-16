@@ -1,0 +1,14 @@
+[
+    {
+        "keystroke": "shift control alt R",
+        "actions": [2]
+    },
+    {
+        "keystroke": "shift control N",
+        "actions": [0]
+    },
+    {
+        "keystroke": "shift control L",
+        "actions": [1]
+    }
+]
