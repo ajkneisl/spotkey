@@ -1,14 +1,26 @@
 [
     {
-        "keystroke": "shift control alt R",
-        "actions": [2]
-    },
-    {
-        "keystroke": "shift control N",
+        "keystroke": "ctrl shift N",
         "actions": [0]
     },
     {
-        "keystroke": "shift control L",
+        "keystroke": "ctrl shift P",
         "actions": [1]
+    },
+    {
+        "keystroke": "ctrl shift alt R",
+        "actions": [2]
+    },
+    {
+        "keystroke": "ctrl shift J",
+        "actions": ["3:incr|15"]
+    },
+    {
+        "keystroke": "ctrl shift K",
+        "actions": ["3:decr|15"]
+    },
+    {
+        "keystroke": "alt P",
+        "actions": [5]
     }
 ]

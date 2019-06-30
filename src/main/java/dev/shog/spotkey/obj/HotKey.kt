@@ -1,23 +1,17 @@
 package dev.shog.spotkey.obj
 
+import dev.shog.spotkey.Action
 import dev.shog.spotkey.LOGGER
-import dev.shog.spotkey.Spotify.SPOTIFY_API
-import dev.shog.spotkey.handle.HotKeyLoader
-import dev.shog.spotkey.isCurrentlyPlaying
+import dev.shog.spotkey.getAction
+import dev.shog.spotkey.getDetailedAction
 import org.json.JSONArray
-import java.awt.event.InputEvent
-import java.awt.event.KeyEvent
-import java.util.concurrent.ConcurrentHashMap
 import javax.swing.KeyStroke
 
 /**
  * Holds a loaded Hot Key
  */
 class HotKey(private val keystrokeString: String, private val actions: JSONArray) {
-    init {
-        validate()
-        generate()
-    }
+    init { validate(); generate() }
 
     /**
      * The keystroke that executes the HotKey
@@ -46,9 +40,43 @@ class HotKey(private val keystrokeString: String, private val actions: JSONArray
         val ia = ArrayList<Action>()
 
         for (i in 0 until actions.length()) {
+            val obj = actions.get(i)
+
+            // Assume this is a detailed action
+            if (obj.toString().contains(":")) {
+                val argsSplit = obj.toString().split(":")
+                val args = HashMap<String, Any>()
+
+                if (argsSplit.size != 2) throw IllegalArgumentException("Illegal detailed action.")
+
+                val id = try {
+                    argsSplit[0].toInt()
+                } catch (ex: NumberFormatException) {
+                    throw IllegalArgumentException("Illegal ID for detailed action.")
+                }
+
+                for (pvc in argsSplit[1].split("/")) {
+                    if (pvc.contains("|")) {
+                        val pvcSplit = pvc.split("|")
+
+                        if (pvcSplit.size != 2) throw IllegalArgumentException("Illegal attribute on detailed action.")
+
+                        val attr = pvcSplit[0]
+                        val attrVal = pvcSplit[1]
+
+                        args[attr] = attrVal
+                    } else continue
+                }
+
+                val ob = getDetailedAction(id, args) ?: continue
+
+                ia.add(ob)
+                continue
+            }
+
             val ob = actions.get(i) as? Int ?: continue
 
-            ia.add(getActionFromInteger(ob))
+            ia.add(getAction(ob))
         }
 
         generatedValues = ia
@@ -87,44 +115,4 @@ class HotKey(private val keystrokeString: String, private val actions: JSONArray
             if (a.run()) a.action.run() else LOGGER.warn("Waiting for cool-down...")
         }
     }
-
-    companion object {
-        private fun getActionFromInteger(int: Int): Action = ACTIONS[int] ?: throw IllegalArgumentException("Illegal input for Action")
-
-        private val ACTIONS = object : ConcurrentHashMap<Int, Action>() {
-            init {
-                this[0] = Action(Thread {
-                    if (isCurrentlyPlaying()) SPOTIFY_API.skipUsersPlaybackToNextTrack().build().execute()
-                }, 100)
-
-                this[1] = Action(Thread {
-                    if (isCurrentlyPlaying()) SPOTIFY_API.skipUsersPlaybackToPreviousTrack().build().execute()
-                }, 100)
-
-                this[2] = Action(Thread {
-                    HotKeyLoader.reloadHotKeys()
-                }, 10000)
-            }
-        }
-    }
-
-    /**
-     * An action that a HotKey can activate.
-     */
-    internal class Action(val action: Thread, private val coolDown: Long) {
-        private var lastRan = 0L
-
-        /**
-         * Executes the action
-         */
-        fun run(): Boolean {
-            if (System.currentTimeMillis() - lastRan >= coolDown) {
-                lastRan = System.currentTimeMillis()
-                return true
-            }
-
-            return false
-        }
-    }
-
 }

@@ -2,10 +2,10 @@ package dev.shog.spotkey
 
 import com.wrapper.spotify.SpotifyApi
 import com.wrapper.spotify.SpotifyHttpManager
-import dev.shog.spotkey.handle.HotKeyHandler
 import java.awt.Desktop
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import kotlin.system.exitProcess
 
 /**
  * Manages the Spotify API
@@ -33,7 +33,7 @@ object Spotify {
     private fun openBrowser() {
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             Desktop.getDesktop().browse(AUTHORIZATION_URI_REQUEST.execute())
-        } else System.exit(-1)
+        } else exitProcess(-1)
     }
 
     /**

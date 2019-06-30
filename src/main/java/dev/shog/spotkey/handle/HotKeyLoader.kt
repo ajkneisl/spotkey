@@ -1,5 +1,7 @@
 package dev.shog.spotkey.handle
 
+import dev.shog.spotkey.DATA
+import dev.shog.spotkey.DataType
 import dev.shog.spotkey.LOGGER
 import dev.shog.spotkey.obj.HotKey
 import org.apache.commons.lang3.SystemUtils
@@ -52,13 +54,13 @@ object HotKeyLoader {
         hotKeys.clear()
         val json = getCfg()
 
-        if (!json.has("use-default") || !json.has("keys")) throw IllegalArgumentException("There's something wrong with the current configuration files.")
+        if (!isCorrect(json)) throw IllegalArgumentException("There's something wrong with the current configuration files.")
 
         if (json.getBoolean("use-default")) {
             val ar = JSONArray(
                     String(
                             File(
-                                    this::class.java.classLoader.getResource("default.json").toURI()
+                                    this::class.java.classLoader.getResource("default.json")!!.toURI()
                             ).inputStream().readBytes()
                     )
             )
@@ -116,6 +118,8 @@ object HotKeyLoader {
             hotKeys.add(HotKey(keystroke, actions))
         }
 
+        refreshVariables(json.getJSONArray("vars"))
+
         HotKeyHandler.refreshCurrentlyLoaded()
         LOGGER.debug("Completed hot-key refresh! Took ${System.currentTimeMillis()-start}ms")
     }
@@ -126,6 +130,24 @@ object HotKeyLoader {
     private fun writeCfg(js: JSONObject) = SPOTKEY_CFG.outputStream().write(js.toString().toByteArray())
 
     /**
+     * Refreshes the user variables.
+     */
+    private fun refreshVariables(data: JSONArray) {
+        for (i in 0 until data.length()) {
+            val obj = data.get(i) as? JSONObject ?: continue
+            if (!isVariableCorrect(obj)) continue
+
+            val name = obj.getString("name")
+            val type = obj.getString("type")
+            val value = obj.get("value") as? String ?: continue
+
+            when (type) {
+                "playlist" -> DATA[name] = Pair(DataType.PLAYLIST_URI, value)
+            }
+        }
+    }
+
+    /**
      * Initializes the config with default values
      */
     private fun initCfg(): Boolean {
@@ -133,6 +155,7 @@ object HotKeyLoader {
 
         obj.put("use-default", true)
         obj.put("keys", JSONArray())
+        obj.put("vars", JSONArray())
 
         writeCfg(obj)
 
@@ -143,4 +166,20 @@ object HotKeyLoader {
      * Gets a JSONObject from the configuration file
      */
     private fun getCfg(): JSONObject = JSONObject(String(SPOTKEY_CFG.inputStream().readBytes()))
+
+    /**
+     * Makes sure the JSONObject contains the correct values.
+     */
+    private fun isCorrect(obj: JSONObject): Boolean =
+            (obj.has("use-default") && obj.get("use-default") is Boolean) &&
+                    (obj.has("keys") && obj.get("keys") is JSONArray) &&
+                    (obj.has("vars") && obj.get("vars") is JSONArray)
+
+    /**
+     * Makes sure the variable JSONObject has all of the required parts.
+     */
+    private fun isVariableCorrect(obj: JSONObject): Boolean =
+            (obj.has("name") && obj.get("name") is String) &&
+                    (obj.has("type") && obj.get("type") is String) &&
+                    (obj.has("value"))
 }

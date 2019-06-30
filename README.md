@@ -23,7 +23,9 @@ The format for the configuration file should be
 
 The `use-default` indicates if you're using the default hot-keys. These consist of simple hot-keys such as `CTRL SHIFT N` for next song. (view the bottom)
 
-Actions are defined by Integers. The tasks are executed in the way they're put. Like in the example above, it'd go `0` then `1`.
+Actions are defined by Integers. The tasks are executed in the way they're put. Like in the example above, it'd go `0` then `1`. 
+
+There can also be detailed actions. These are defined by the same integers but also have different values that modify it. Like `3:incr|30`. Every time the keystroke is pressed, it would increase the volume by 30. If you wanted to something like `3:incr|30` and `3:decr|30`, do them in separate actions.
 
 A keystroke should me in the format of *modifier* *key*. Like: `ctrl F`. Keys, like `F`, should be uppercase.
 
