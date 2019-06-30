@@ -1,9 +1,13 @@
-# spotkey
+# SpotKey
 SpotKey is a lightweight Spotify hot-key manager.
-## How to Use
-If you don't know how to build this, I suggest waiting until something is released.
 
-When starting, you're currently required to use command line. It will open your browser, to which then you're required to accept. Then it will redirect you. You need to copy everything after the `code=` and then paste that into the client. __This requires Spotify Premium to work properly.__
+## Planned Features
+- The ability to play exact playlists utilizing `var`s.
+- The ability to play exact tracks utilizing `var`s.
+- A UI or something else to manage SpotKey.
+
+## How to Use
+Firstly, execute the jar within the command line. When started, it will prompt you to your browser where you must accept the agreement, and then copy the provided code. You must then paste the code into the command prompt. **This requires Spotify Premium**
 
 You can define specific keystrokes in the SpotKey configuration folder. If you're on Windows, you can expect to find this at `%appdata%/spotkey/conf.json`. On Linux, this is at `/etc/spotkey/conf.json`. 
 
@@ -17,11 +21,12 @@ The format for the configuration file should be
             "keystroke": "shift ctrl N",
             "actions": [0, 1]
         }
-    ]
+    ],
+    "vars": []
 }
 ```
 
-The `use-default` indicates if you're using the default hot-keys. These consist of simple hot-keys such as `CTRL SHIFT N` for next song. (view the bottom)
+The `use-default` indicates if you're using the default hot-keys. These consist of simple hot-keys such as `alt P` to pause. (view the bottom)
 
 Actions are defined by Integers. The tasks are executed in the way they're put. Like in the example above, it'd go `0` then `1`. 
 
@@ -29,4 +34,6 @@ There can also be detailed actions. These are defined by the same integers but a
 
 A keystroke should me in the format of *modifier* *key*. Like: `ctrl F`. Keys, like `F`, should be uppercase.
 
-If there's an issue that you know how to fix, please make a pull request. If you're confused, message me on discord at `shozer#0001`.
+You can view all default actions here. https://github.com/Shoganeko/spotkey/blob/master/src/main/resources/default.json
+
+If there's an issue that you know how to fix, please make a pull request. If you're confused, message me on discord at `sho#0001`.
