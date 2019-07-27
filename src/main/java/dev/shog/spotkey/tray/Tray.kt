@@ -1,10 +1,8 @@
 package dev.shog.spotkey.tray
 
-import dev.shog.spotkey.handle.HotKeyHandler
 import dev.shog.spotkey.handle.HotKeyLoader
 import dev.shog.spotkey.ui.Error
 import java.awt.*
-import java.util.logging.FileHandler
 import javax.swing.ImageIcon
 import kotlin.system.exitProcess
 

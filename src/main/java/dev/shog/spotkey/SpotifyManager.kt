@@ -1,14 +1,13 @@
 package dev.shog.spotkey
 
 import dev.shog.spotkey.handle.HotKeyLoader
-import org.slf4j.LoggerFactory
-import dev.shog.spotkey.obj.HotKey
 import dev.shog.spotkey.tray.Tray
+import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 val LOGGER = LoggerFactory.getLogger("SpotKey")!!
-const val VERSION = "1.0.0-A2"
+const val VERSION = "1.0.0-B1"
 
 fun main() {
     Spotify.login()

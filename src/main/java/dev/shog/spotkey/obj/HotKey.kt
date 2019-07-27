@@ -21,7 +21,7 @@ class HotKey(private val keystrokeString: String, private val actions: JSONArray
     /**
      * If the keystroke is valid
      */
-    var valid: Boolean = false
+    private var valid: Boolean = false
 
     /**
      * If the variable generatedValues has been created.

@@ -4,14 +4,12 @@ import java.awt.Dimension
 import javax.swing.*
 import javax.swing.UIManager
 
-
-
 /**
  * Where the Spotify access key is pasted.
  */
 class InitialFrame: JPanel() {
     var codeField: JTextField = JTextField(5)
-    var retrievedLabel: JLabel = JLabel("Paste in Retrieved Code")
+    private var retrievedLabel: JLabel = JLabel("Paste in Retrieved Code")
     var cont: JButton = JButton("Continue")
 
     init {

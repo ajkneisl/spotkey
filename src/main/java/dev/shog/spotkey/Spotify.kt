@@ -5,12 +5,7 @@ import com.wrapper.spotify.SpotifyHttpManager
 import dev.shog.spotkey.ui.Error
 import dev.shog.spotkey.ui.InitialFrame
 import java.awt.Desktop
-import java.awt.event.WindowEvent
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import kotlin.system.exitProcess
-import java.awt.event.WindowEvent.WINDOW_CLOSING
-
 
 
 /**
