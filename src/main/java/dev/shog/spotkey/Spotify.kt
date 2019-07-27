@@ -2,6 +2,7 @@ package dev.shog.spotkey
 
 import com.wrapper.spotify.SpotifyApi
 import com.wrapper.spotify.SpotifyHttpManager
+import dev.shog.spotkey.ui.Error
 import java.awt.Desktop
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -48,7 +49,12 @@ object Spotify {
 
         println("Using code $code")
 
-        val auth = SPOTIFY_API.authorizationCode(code).build().execute()
+        val auth = try {
+            SPOTIFY_API.authorizationCode(code).build().execute()
+        } catch (e: Exception) {
+            Error.make("Invalid authorization code!")
+            exitProcess(-1)
+        }
 
         SPOTIFY_API.accessToken = auth.accessToken
         SPOTIFY_API.refreshToken = auth.refreshToken

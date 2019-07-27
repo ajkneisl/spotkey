@@ -4,10 +4,12 @@ import dev.shog.spotkey.DATA
 import dev.shog.spotkey.DataType
 import dev.shog.spotkey.LOGGER
 import dev.shog.spotkey.obj.HotKey
+import dev.shog.spotkey.ui.Error
 import org.apache.commons.lang3.SystemUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import kotlin.system.exitProcess
 
 /**
  * Manages the configuration file.
@@ -31,12 +33,19 @@ object HotKeyLoader {
     /**
      * The configuration file.
      */
-    private val SPOTKEY_CFG = if (LINUX) File(SPOTKEY_DIR.path + "/conf.json") else File(SPOTKEY_DIR.path + "\\conf.json")
+    val SPOTKEY_CFG = if (LINUX) File(SPOTKEY_DIR.path + "/conf.json") else File(SPOTKEY_DIR.path + "\\conf.json")
 
     init {
-        if (!SPOTKEY_DIR.exists() && !SPOTKEY_DIR.mkdirs()) throw Exception("There was an issue creating startup files.")
+        if (!SPOTKEY_DIR.exists() && !SPOTKEY_DIR.mkdirs()) {
+            Error.make("There was an issue creating startup files.")
+            exitProcess(-1)
+        }
+
         if (!SPOTKEY_CFG.exists()) {
-            if (!SPOTKEY_CFG.createNewFile()) throw Exception("There was an issue creating startup files.")
+            if (!SPOTKEY_CFG.createNewFile()) {
+                Error.make("There was an issue creating startup files.")
+                exitProcess(-1)
+            }
 
             initCfg()
         }
