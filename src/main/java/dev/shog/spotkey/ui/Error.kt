@@ -21,11 +21,8 @@ object Error {
         val panel = JFrame("SpotKey - Error!")
 
         panel.contentPane.add(ErrorUI(error))
-
         panel.pack()
-
         panel.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
-
         panel.isVisible = true
     }
 

@@ -3,10 +3,15 @@ package dev.shog.spotkey
 import com.wrapper.spotify.SpotifyApi
 import com.wrapper.spotify.SpotifyHttpManager
 import dev.shog.spotkey.ui.Error
+import dev.shog.spotkey.ui.InitialFrame
 import java.awt.Desktop
+import java.awt.event.WindowEvent
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import kotlin.system.exitProcess
+import java.awt.event.WindowEvent.WINDOW_CLOSING
+
+
 
 /**
  * Manages the Spotify API
@@ -16,6 +21,11 @@ object Spotify {
      * If the instance is ready to take requests
      */
     private var ready = false
+
+    /**
+     * If the client's available
+     */
+    var clientAvailable = false
 
     val SPOTIFY_API = SpotifyApi.Builder()
             .setClientId("256caa4198404370a060496d31d73f9e")
@@ -43,24 +53,26 @@ object Spotify {
     fun login() {
         openBrowser()
 
-        val reader = BufferedReader(InputStreamReader(System.`in`))
+        val frame = InitialFrame.create()
 
-        val code = reader.readLine()
+        frame.second.cont.addActionListener {
+            frame.first.isVisible = false
 
-        println("Using code $code")
+            val auth = try {
+                SPOTIFY_API.authorizationCode(frame.second.codeField.text ?: "").build().execute()
+            } catch (e: Exception) {
+                Error.make("Invalid authorization code!")
+                exitProcess(-1)
+            }
 
-        val auth = try {
-            SPOTIFY_API.authorizationCode(code).build().execute()
-        } catch (e: Exception) {
-            Error.make("Invalid authorization code!")
-            exitProcess(-1)
+            SPOTIFY_API.accessToken = auth.accessToken
+            SPOTIFY_API.refreshToken = auth.refreshToken
+            ready = true
+
+            LOGGER.info("Successfully signed into Spotify with user ${getUserData().email}.")
+
+            clientAvailable = true
         }
-
-        SPOTIFY_API.accessToken = auth.accessToken
-        SPOTIFY_API.refreshToken = auth.refreshToken
-        ready = true
-
-        LOGGER.info("Successfully signed into Spotify with user ${getUserData().email}.")
     }
 
     /**
