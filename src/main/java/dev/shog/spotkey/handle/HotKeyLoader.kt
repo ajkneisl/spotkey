@@ -67,11 +67,7 @@ object HotKeyLoader {
 
         if (json.getBoolean("use-default")) {
             val ar = JSONArray(
-                    String(
-                            File(
-                                    this::class.java.classLoader.getResource("default.json")!!.toURI()
-                            ).inputStream().readBytes()
-                    )
+                    String(this::class.java.classLoader.getResourceAsStream("default.json")?.readBytes() ?: ByteArray(0))
             )
 
             for (i in 0 until ar.length()) {
