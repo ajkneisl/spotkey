@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 val LOGGER = LoggerFactory.getLogger("SpotKey")!!
-const val VERSION = "1.0.0-B1"
+const val VERSION = "1.0.0-B2"
 
 fun main() {
     Spotify.login()

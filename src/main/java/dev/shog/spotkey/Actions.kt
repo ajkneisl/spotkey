@@ -1,9 +1,9 @@
 package dev.shog.spotkey
 
 import dev.shog.spotkey.handle.HotKeyLoader
-import java.lang.Exception
 import java.lang.NumberFormatException
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.Exception
 
 /**
  * An action that a HotKey can activate.
@@ -68,12 +68,20 @@ val PRESET_ACTIONS = object : ConcurrentHashMap<Int, Action>() {
          * Pause or unpause user's playback.
          */
         this[5] = Action(Thread {
-            try {
-                if (!isCurrentlyPlaying())
+            if (!isCurrentlyPlaying())
+                try {
                     Spotify.SPOTIFY_API.startResumeUsersPlayback().build().execute()
-                else Spotify.SPOTIFY_API.pauseUsersPlayback().build().execute()
+                } catch (ex: Exception) {
+                    // If it can't just resume, pick the first available device.
+                    Spotify.SPOTIFY_API.startResumeUsersPlayback()
+                            .device_id(Spotify.SPOTIFY_API.usersAvailableDevices.build().execute().first().id)
+                            .build()
+                            .execute()
+                }
+            else try {
+                Spotify.SPOTIFY_API.pauseUsersPlayback().build().execute()
             } catch (ex: Exception) {
-                LOGGER.warn("Could not pause or unpause playback!")
+                LOGGER.warn("Could not pause playback!")
             }
         }, 100)
     }
