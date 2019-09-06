@@ -2,10 +2,16 @@ package dev.shog.spotkey
 
 import com.wrapper.spotify.SpotifyApi
 import com.wrapper.spotify.SpotifyHttpManager
+import com.wrapper.spotify.model_objects.miscellaneous.CurrentlyPlayingContext
 import dev.shog.spotkey.ui.Error
 import dev.shog.spotkey.ui.InitialFrame
 import java.awt.Desktop
 import kotlin.system.exitProcess
+import jdk.nashorn.internal.runtime.ScriptingFunctions.readLine
+import java.io.InputStreamReader
+import java.io.BufferedReader
+
+
 
 
 /**
@@ -46,6 +52,26 @@ object Spotify {
      * Opens the browser and allows the user to login.
      */
     fun login() {
+        if (HEADLESS) {
+            val br = BufferedReader(InputStreamReader(System.`in`))
+            print("Please paste your authorization code:")
+            val s = br.readLine()
+
+            val auth = try {
+                SPOTIFY_API.authorizationCode(s ?: "").build().execute()
+            } catch (e: Exception) {
+                Error.make("Invalid authorization code!")
+                exitProcess(-1)
+            }
+
+            SPOTIFY_API.accessToken = auth.accessToken
+            SPOTIFY_API.refreshToken = auth.refreshToken
+            ready = true
+
+            LOGGER.info("Successfully signed into Spotify with user ${getUserData().email}.")
+
+            clientAvailable = true
+        }
         openBrowser()
 
         val frame = InitialFrame.create()
@@ -69,6 +95,24 @@ object Spotify {
             clientAvailable = true
         }
     }
+
+    /**
+     * If it's currently playing anything.
+     */
+    fun isCurrentlyPlaying(): Boolean {
+        val x = try {
+            Spotify.SPOTIFY_API.informationAboutUsersCurrentPlayback.build().execute()
+        } catch (ex: java.lang.Exception) {
+            return false
+        } ?: return false
+
+        return x.is_playing ?: false
+    }
+
+    /**
+     * Information about what the user is currently playing
+     */
+    fun getCurrentPlayingData(): CurrentlyPlayingContext = Spotify.SPOTIFY_API.informationAboutUsersCurrentPlayback.build().execute()
 
     /**
      * If the user currently logged in is premium

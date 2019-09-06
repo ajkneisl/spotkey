@@ -33,14 +33,14 @@ val PRESET_ACTIONS = object : ConcurrentHashMap<Int, Action>() {
          * Skips to next song.
          */
         this[0] = Action(Thread {
-            if (isCurrentlyPlaying()) Spotify.SPOTIFY_API.skipUsersPlaybackToNextTrack().build().execute()
+            if (Spotify.isCurrentlyPlaying()) Spotify.SPOTIFY_API.skipUsersPlaybackToNextTrack().build().execute()
         }, 100)
 
         /**
          * Skips to previous song.
          */
         this[1] = Action(Thread {
-            if (isCurrentlyPlaying()) Spotify.SPOTIFY_API.skipUsersPlaybackToPreviousTrack().build().execute()
+            if (Spotify.isCurrentlyPlaying()) Spotify.SPOTIFY_API.skipUsersPlaybackToPreviousTrack().build().execute()
         }, 100)
 
         /**
@@ -54,7 +54,7 @@ val PRESET_ACTIONS = object : ConcurrentHashMap<Int, Action>() {
          * +1s the current playback volume.
          */
         this[3] = Action(Thread {
-            if (isCurrentlyPlaying()) Spotify.SPOTIFY_API.setVolumeForUsersPlayback(getCurrentPlayingData().device.volume_percent + 1)
+            if (Spotify.isCurrentlyPlaying()) Spotify.SPOTIFY_API.setVolumeForUsersPlayback(Spotify.getCurrentPlayingData().device.volume_percent + 1)
         }, 100)
 
         /**
@@ -68,7 +68,7 @@ val PRESET_ACTIONS = object : ConcurrentHashMap<Int, Action>() {
          * Pause or unpause user's playback.
          */
         this[5] = Action(Thread {
-            if (!isCurrentlyPlaying())
+            if (!Spotify.isCurrentlyPlaying())
                 try {
                     Spotify.SPOTIFY_API.startResumeUsersPlayback().build().execute()
                 } catch (ex: Exception) {
@@ -113,7 +113,7 @@ fun getDetailedAction(int: Int, args: HashMap<String, Any>): Action? {
             } else 1
 
             return Action(Thread {
-                if (isCurrentlyPlaying()) {
+                if (Spotify.isCurrentlyPlaying()) {
                     for (i in 0 until tracks)
                         Spotify.SPOTIFY_API.skipUsersPlaybackToNextTrack().build().execute()
                 }
@@ -131,7 +131,7 @@ fun getDetailedAction(int: Int, args: HashMap<String, Any>): Action? {
             } else 1
 
             return Action(Thread {
-                if (isCurrentlyPlaying()) {
+                if (Spotify.isCurrentlyPlaying()) {
                     for (i in 0 until tracks)
                         Spotify.SPOTIFY_API.skipUsersPlaybackToPreviousTrack().build().execute()
                 }
@@ -154,8 +154,8 @@ fun getDetailedAction(int: Int, args: HashMap<String, Any>): Action? {
                     if (0 > decr || 100 < decr) throw IllegalArgumentException("Invalid Volume")
 
                     return Action(Thread {
-                        if (isCurrentlyPlaying()) {
-                            var decrease = getCurrentPlayingData().device.volume_percent - decr
+                        if (Spotify.isCurrentlyPlaying()) {
+                            var decrease = Spotify.getCurrentPlayingData().device.volume_percent - decr
 
                             if (0 > decrease) decrease = 0
 
@@ -173,7 +173,7 @@ fun getDetailedAction(int: Int, args: HashMap<String, Any>): Action? {
                     if (0 > exa || 100 < exa) throw IllegalArgumentException("Invalid Volume")
 
                     return Action(Thread {
-                        if (isCurrentlyPlaying()) {
+                        if (Spotify.isCurrentlyPlaying()) {
                             Spotify.SPOTIFY_API.setVolumeForUsersPlayback(exa).build().execute()
                         }
                     }, 100)
@@ -190,8 +190,8 @@ fun getDetailedAction(int: Int, args: HashMap<String, Any>): Action? {
                     if (0 > volumeIncrement || 100 < volumeIncrement) throw IllegalArgumentException("Invalid Volume")
 
                     return Action(Thread {
-                        if (isCurrentlyPlaying()) {
-                            var incr = getCurrentPlayingData().device.volume_percent + volumeIncrement
+                        if (Spotify.isCurrentlyPlaying()) {
+                            var incr = Spotify.getCurrentPlayingData().device.volume_percent + volumeIncrement
 
                             if (incr > 100) incr = 100
 

@@ -8,8 +8,19 @@ import javax.swing.UIManager
  * Where the Spotify access key is pasted.
  */
 class InitialFrame: JPanel() {
+    /**
+     * The field where the code should be pasted.
+     */
     var codeField: JTextField = JTextField(5)
+
+    /**
+     * Label for [codeField].
+     */
     private var retrievedLabel: JLabel = JLabel("Paste in Retrieved Code")
+
+    /**
+     * Inserts.
+     */
     var cont: JButton = JButton("Continue")
 
     init {
@@ -42,7 +53,8 @@ class InitialFrame: JPanel() {
 
             frame.contentPane.add(initPanel)
             frame.pack()
-            frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+            frame.isAlwaysOnTop = true
+            frame.defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
             frame.isVisible = true
 
             return Pair(frame, initPanel)

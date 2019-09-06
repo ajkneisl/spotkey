@@ -23,7 +23,6 @@ object Tray {
             defaultItem.addActionListener {
                 exitProcess(0)
             }
-            popup.add(defaultItem)
 
             // modifies config
             val configItem = MenuItem("Config")
@@ -34,15 +33,16 @@ object Tray {
                     Error.make("You don't have a default program to open .json files!")
                 }
             }
+
             popup.add(configItem)
+            popup.add(defaultItem)
 
             trayIcon = TrayIcon(image, "SpotKey", popup)
 
             tray.add(trayIcon)
 
         } else {
-            Error.make("Your system doesn't support SystemTray.")
-            exitProcess(-1)
+            Error.make("Your system doesn't support System Tray, avoiding.")
         }
     }
 }

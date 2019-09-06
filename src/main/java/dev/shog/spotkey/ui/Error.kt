@@ -1,6 +1,8 @@
 package dev.shog.spotkey.ui
 
-import dev.shog.spotkey.handle.HotKeyHandler
+import dev.shog.spotkey.HEADLESS
+import dev.shog.spotkey.LOGGER
+import dev.shog.spotkey.handle.HotKeyLoader
 import java.awt.Dimension
 import java.awt.Font
 import javax.swing.JFrame
@@ -17,15 +19,23 @@ object Error {
      * Create an error ui with [error].
      */
     fun make(error: String) {
-        HotKeyHandler.beep()
+        if (HEADLESS) {
+            LOGGER.error(error)
+            return
+        }
+
+        HotKeyLoader.beep()
         val panel = JFrame("SpotKey - Error!")
 
         panel.contentPane.add(ErrorUI(error))
         panel.pack()
-        panel.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+        panel.defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
         panel.isVisible = true
     }
 
+    /**
+     * The Error UI
+     */
     internal class ErrorUI(errString: String): JPanel() {
         private val errorLabel: JLabel = JLabel("Error")
         private val errorText: JLabel = JLabel(errString)

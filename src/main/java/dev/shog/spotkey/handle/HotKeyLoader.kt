@@ -1,5 +1,6 @@
 package dev.shog.spotkey.handle
 
+import com.tulskiy.keymaster.common.Provider
 import dev.shog.spotkey.DATA
 import dev.shog.spotkey.DataType
 import dev.shog.spotkey.LOGGER
@@ -8,6 +9,7 @@ import dev.shog.spotkey.ui.Error
 import org.apache.commons.lang3.SystemUtils
 import org.json.JSONArray
 import org.json.JSONObject
+import java.awt.Toolkit
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -15,6 +17,26 @@ import kotlin.system.exitProcess
  * Manages the configuration file.
  */
 object HotKeyLoader {
+    /**
+     * The current keymaster provider.
+     */
+    private val PROVIDER = Provider.getCurrentProvider(true)
+
+    /**
+     * Refreshes the currently loaded keybinds.
+     */
+    fun refreshCurrentlyLoaded() {
+        PROVIDER.reset()
+
+        hotKeys.forEach { k ->
+            PROVIDER.register(k.getKeyStroke()) { k.execute() }
+        }
+    }
+
+    /**
+     * Plays a beep noise, an indicator of an issue.
+     */
+    fun beep() = Toolkit.getDefaultToolkit().beep()
     /**
      * The loaded HotKeys
      */
@@ -125,7 +147,7 @@ object HotKeyLoader {
 
         refreshVariables(json.getJSONArray("vars"))
 
-        HotKeyHandler.refreshCurrentlyLoaded()
+        refreshCurrentlyLoaded()
         LOGGER.debug("Completed hot-key refresh! Took ${System.currentTimeMillis()-start}ms")
     }
 

@@ -22,5 +22,9 @@
     {
         "keystroke": "alt P",
         "actions": [5]
+    },
+    {
+        "keystroke": "alt D",
+        "actions": [4]
     }
 ]

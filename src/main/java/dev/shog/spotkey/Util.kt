@@ -2,6 +2,7 @@ package dev.shog.spotkey
 
 import com.wrapper.spotify.model_objects.miscellaneous.CurrentlyPlayingContext
 import com.wrapper.spotify.model_objects.specification.User
+import dev.shog.spotkey.ui.Debug
 import java.lang.Exception
 import java.lang.StringBuilder
 import java.util.concurrent.ConcurrentHashMap
@@ -15,24 +16,6 @@ enum class DataType {
 val DATA = ConcurrentHashMap<String, Pair<DataType, String>>()
 
 /**
- * If it's currently playing anything.
- */
-fun isCurrentlyPlaying(): Boolean {
-    val x = try {
-        Spotify.SPOTIFY_API.informationAboutUsersCurrentPlayback.build().execute()
-    } catch (ex: Exception) {
-        return false
-    } ?: return false
-
-    return x.is_playing ?: false
-}
-
-/**
- * Information about what the user is currently playing
- */
-fun getCurrentPlayingData(): CurrentlyPlayingContext = Spotify.SPOTIFY_API.informationAboutUsersCurrentPlayback.build().execute()
-
-/**
  * Gets the current user's data
  */
 fun getUserData(): User = Spotify.SPOTIFY_API.currentUsersProfile.build().execute()
@@ -41,19 +24,25 @@ fun getUserData(): User = Spotify.SPOTIFY_API.currentUsersProfile.build().execut
  * Debugs the current playing data
  */
 fun debug() {
-    if (isCurrentlyPlaying()) {
-        val data = getCurrentPlayingData()
+    if (Spotify.isCurrentlyPlaying()) {
+        val data = Spotify.getCurrentPlayingData()
         val sb = StringBuilder()
 
         for (artist in data.item.artists) sb.append("${artist.name}, ")
 
         val artists = sb.toString().removeSuffix(", ")
 
-        LOGGER.debug("Device: Name = ${data.device.name}, Type = ${data.device.type}")
-        LOGGER.debug("Timestamp: ${data.timestamp}")
-        LOGGER.debug("Volume: ${data.device.volume_percent}%")
-        LOGGER.debug("Currently Playing: Name = ${data.item.name}, URI = ${data.item.uri}, Album = ${data.item.album.name}, Artists = $artists")
-        LOGGER.debug("State: Shuffle = ${data.shuffle_state}, Repeat = ${data.repeat_state}")
-        LOGGER.debug("Progress: ${data.progress_ms}")
+        Debug.make(buildString {
+            append("Device: Name = ${data.device.name}, Type = ${data.device.type}, ID = ${data.device.id}")
+            append("\nTimestamp: ${data.timestamp}")
+            append("\nVolume: ${data.device.volume_percent}%")
+            append("\nCurrently Playing:")
+            append("\n    - Name: ${data.item.name}")
+            append("\n    - URI: ${data.item.uri}")
+            append("\n    - Album: ${data.item.album.name}")
+            append("\n    - Artists: $artists")
+            append("\nState: Shuffle = ${data.shuffle_state}, Repeat = ${data.repeat_state}")
+            append("\nProgress: ${data.progress_ms}")
+        }, "Song Information")
     } else LOGGER.warn("Currently not playing anything.")
 }
