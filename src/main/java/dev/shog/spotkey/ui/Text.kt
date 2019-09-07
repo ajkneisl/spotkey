@@ -1,6 +1,7 @@
 package dev.shog.spotkey.ui
 
 import dev.shog.spotkey.HEADLESS
+import dev.shog.spotkey.ICON
 import dev.shog.spotkey.LOGGER
 import dev.shog.spotkey.handle.HotKeyLoader
 import java.awt.Dimension
@@ -37,6 +38,8 @@ object Text {
         ui.cont.addActionListener {
             onSuccess.invoke(panel, ui.textField.text)
         }
+
+        panel.iconImage = ICON
 
         panel.isVisible = true
     }

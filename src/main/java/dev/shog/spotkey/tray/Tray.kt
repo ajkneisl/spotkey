@@ -1,5 +1,6 @@
 package dev.shog.spotkey.tray
 
+import dev.shog.spotkey.ICON
 import dev.shog.spotkey.LOGGER
 import dev.shog.spotkey.handle.HotKeyLoader
 import dev.shog.spotkey.ui.Error
@@ -16,7 +17,6 @@ object Tray {
         val trayIcon: TrayIcon
         if (SystemTray.isSupported()) {
             val tray = SystemTray.getSystemTray()
-            val image = ImageIcon(this.javaClass.getResource("/img.png")).image
 
             val popup = PopupMenu()
 
@@ -55,7 +55,7 @@ object Tray {
             popup.add(defaultDevice)
             popup.add(defaultItem)
 
-            trayIcon = TrayIcon(image, "SpotKey", popup)
+            trayIcon = TrayIcon(ICON, "SpotKey", popup)
 
             tray.add(trayIcon)
 

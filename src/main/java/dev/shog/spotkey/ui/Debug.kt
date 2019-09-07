@@ -1,6 +1,7 @@
 package dev.shog.spotkey.ui
 
 import dev.shog.spotkey.HEADLESS
+import dev.shog.spotkey.ICON
 import dev.shog.spotkey.LOGGER
 import java.awt.Dimension
 import java.awt.Font
@@ -40,6 +41,8 @@ object Debug {
                 e.printStackTrace()
             }
         } catch (ex: java.lang.Exception) { }
+
+        panel.iconImage = ICON
 
         panel.isVisible = true
     }

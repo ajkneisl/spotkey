@@ -1,5 +1,6 @@
 package dev.shog.spotkey.ui
 
+import dev.shog.spotkey.ICON
 import java.awt.Dimension
 import java.awt.Font
 import javax.swing.*
@@ -57,6 +58,7 @@ class InitialFrame: JPanel() {
             frame.pack()
             frame.isAlwaysOnTop = true
             frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+            frame.iconImage = ICON
             frame.isVisible = true
 
             return Pair(frame, initPanel)

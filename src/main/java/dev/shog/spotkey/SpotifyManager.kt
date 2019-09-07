@@ -8,6 +8,7 @@ import dev.shog.spotkey.ui.Text
 import org.slf4j.LoggerFactory
 import java.awt.GraphicsEnvironment
 import java.util.concurrent.TimeUnit
+import javax.swing.ImageIcon
 import kotlin.system.exitProcess
 
 val LOGGER = LoggerFactory.getLogger("SpotKey")!!
@@ -23,6 +24,11 @@ val HEADLESS: Boolean = try {
 } catch (ex: Exception) {
     true
 }
+
+/**
+ * The SpotKey Icon
+ */
+val ICON = ImageIcon(Spotify.javaClass.getResource("/img.png")).image
 
 /**
  * If SpotKey is in testing mode. This will allow the device to be headless.
