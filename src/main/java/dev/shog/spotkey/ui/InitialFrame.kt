@@ -1,6 +1,7 @@
 package dev.shog.spotkey.ui
 
 import java.awt.Dimension
+import java.awt.Font
 import javax.swing.*
 import javax.swing.UIManager
 
@@ -31,8 +32,10 @@ class InitialFrame: JPanel() {
         add(retrievedLabel)
         add(cont)
 
-        codeField.setBounds(10, 35, 300, 40)
-        retrievedLabel.setBounds(10, 5, 150, 25)
+        retrievedLabel.font = Font("Sans Serif", 0, 24)
+
+        codeField.setBounds(10, 45, 300, codeField.preferredSize.height)
+        retrievedLabel.setBounds(10, 5, retrievedLabel.preferredSize.width, 25)
         cont.setBounds(10, 80, 100, 25)
 
         try {
@@ -40,7 +43,6 @@ class InitialFrame: JPanel() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     companion object {
@@ -54,7 +56,7 @@ class InitialFrame: JPanel() {
             frame.contentPane.add(initPanel)
             frame.pack()
             frame.isAlwaysOnTop = true
-            frame.defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
+            frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
             frame.isVisible = true
 
             return Pair(frame, initPanel)

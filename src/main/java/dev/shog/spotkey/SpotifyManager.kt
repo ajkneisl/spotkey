@@ -4,6 +4,7 @@ import dev.shog.spotkey.handle.HotKeyLoader
 import dev.shog.spotkey.tray.Tray
 import dev.shog.spotkey.ui.Debug
 import dev.shog.spotkey.ui.Error
+import dev.shog.spotkey.ui.Text
 import org.slf4j.LoggerFactory
 import java.awt.GraphicsEnvironment
 import java.util.concurrent.TimeUnit

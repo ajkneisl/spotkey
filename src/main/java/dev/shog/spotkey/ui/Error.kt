@@ -5,10 +5,7 @@ import dev.shog.spotkey.LOGGER
 import dev.shog.spotkey.handle.HotKeyLoader
 import java.awt.Dimension
 import java.awt.Font
-import javax.swing.JFrame
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.WindowConstants
+import javax.swing.*
 
 
 /**
@@ -30,6 +27,15 @@ object Error {
         panel.contentPane.add(ErrorUI(error))
         panel.pack()
         panel.defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
+
+        try {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } catch (ex: java.lang.Exception) { }
+
         panel.isVisible = true
     }
 

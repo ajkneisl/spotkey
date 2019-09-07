@@ -72,7 +72,22 @@ val PRESET_ACTIONS = object : ConcurrentHashMap<Int, Action>() {
                 try {
                     Spotify.SPOTIFY_API.startResumeUsersPlayback().build().execute()
                 } catch (ex: Exception) {
-                    // If it can't just resume, pick the first available device.
+                    // If it can't just resume, try to get the user's selected device. If it's not been selected, use the first one found.
+                    val cfg = HotKeyLoader.getCfg()
+
+                    // The default device must be open and available to spotify, or else it will pick the first available.
+                    if (cfg.has("default-device")) {
+                        val defaultDevice = cfg.get("default-device") as? String ?: return@Thread
+
+                        try {
+                            Spotify.SPOTIFY_API.startResumeUsersPlayback()
+                                    .device_id(defaultDevice)
+                                    .build()
+                                    .execute()
+                            return@Thread
+                        } catch (ex: Exception) { }
+                    }
+
                     Spotify.SPOTIFY_API.startResumeUsersPlayback()
                             .device_id(Spotify.SPOTIFY_API.usersAvailableDevices.build().execute().first().id)
                             .build()

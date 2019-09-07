@@ -1,7 +1,9 @@
 package dev.shog.spotkey.tray
 
+import dev.shog.spotkey.LOGGER
 import dev.shog.spotkey.handle.HotKeyLoader
 import dev.shog.spotkey.ui.Error
+import dev.shog.spotkey.ui.Text
 import java.awt.*
 import javax.swing.ImageIcon
 import kotlin.system.exitProcess
@@ -34,7 +36,23 @@ object Tray {
                 }
             }
 
+            // sets what device you want used when you first play or pause.
+            val defaultDevice = MenuItem("Default Device")
+            defaultDevice.addActionListener {
+                Text.make("Default Device", "Default Device ID", { str ->
+                    Error.make(str)
+                }, { str ->
+                    // Just saves it to the config file
+                    HotKeyLoader.writeCfg(HotKeyLoader.getCfg().put("default-device", str))
+
+                    LOGGER.debug("$str is now the default device ID.")
+
+                    dispose()
+                })
+            }
+
             popup.add(configItem)
+            popup.add(defaultDevice)
             popup.add(defaultItem)
 
             trayIcon = TrayIcon(image, "SpotKey", popup)

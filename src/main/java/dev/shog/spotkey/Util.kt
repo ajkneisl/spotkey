@@ -6,6 +6,12 @@ import dev.shog.spotkey.ui.Debug
 import java.lang.Exception
 import java.lang.StringBuilder
 import java.util.concurrent.ConcurrentHashMap
+import java.awt.Toolkit.getDefaultToolkit
+import javafx.scene.input.Clipboard.getSystemClipboard
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
+
+
 
 enum class DataType {
     PLAYLIST_URI, TRACK_URI
@@ -43,6 +49,13 @@ fun debug() {
             append("\n    - Artists: $artists")
             append("\nState: Shuffle = ${data.shuffle_state}, Repeat = ${data.repeat_state}")
             append("\nProgress: ${data.progress_ms}")
-        }, "Song Information")
+        }, "Song Information", arrayListOf(
+                Debug.InjectableButton("Copy Device ID") {
+                    Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(data.device.id), null)
+                },
+                Debug.InjectableButton("Copy Song URI") {
+                    Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(data.item.uri), null)
+                })
+        )
     } else LOGGER.warn("Currently not playing anything.")
 }

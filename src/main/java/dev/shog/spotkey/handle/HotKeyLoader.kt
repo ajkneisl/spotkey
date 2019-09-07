@@ -154,7 +154,7 @@ object HotKeyLoader {
     /**
      * Writes a JSONObject to the configuration file
      */
-    private fun writeCfg(js: JSONObject) = SPOTKEY_CFG.outputStream().write(js.toString().toByteArray())
+    fun writeCfg(js: JSONObject) = SPOTKEY_CFG.outputStream().write(js.toString().toByteArray())
 
     /**
      * Refreshes the user variables.
@@ -192,7 +192,7 @@ object HotKeyLoader {
     /**
      * Gets a JSONObject from the configuration file
      */
-    private fun getCfg(): JSONObject = JSONObject(String(SPOTKEY_CFG.inputStream().readBytes()))
+    fun getCfg(): JSONObject = JSONObject(String(SPOTKEY_CFG.inputStream().readBytes()))
 
     /**
      * Makes sure the JSONObject contains the correct values.
