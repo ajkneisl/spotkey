@@ -6,6 +6,7 @@ import dev.shog.spotkey.DataType
 import dev.shog.spotkey.LOGGER
 import dev.shog.spotkey.obj.HotKey
 import dev.shog.spotkey.ui.Error
+import dev.shog.spotkey.util.OsUtil
 import org.apache.commons.lang3.SystemUtils
 import org.json.JSONArray
 import org.json.JSONObject
@@ -25,7 +26,7 @@ object HotKeyLoader {
     /**
      * Refreshes the currently loaded keybinds.
      */
-    fun refreshCurrentlyLoaded() {
+    private fun refreshCurrentlyLoaded() {
         PROVIDER.reset()
 
         hotKeys.forEach { k ->
@@ -43,19 +44,14 @@ object HotKeyLoader {
     val hotKeys = ArrayList<HotKey>()
 
     /**
-     * If the client is using Linux, if false assume Windows 10
-     */
-    private val LINUX = SystemUtils.IS_OS_LINUX
-
-    /**
      * The SpotKey directory.
      */
-    private val SPOTKEY_DIR = if (LINUX) File("/etc/spotkey") else File(System.getenv("appdata") + "\\spotkey\\")
+    private val SPOTKEY_DIR = File(OsUtil.getDefaultLocation() + OsUtil.separator + "spotkey")
 
     /**
      * The configuration file.
      */
-    val SPOTKEY_CFG = if (LINUX) File(SPOTKEY_DIR.path + "/conf.json") else File(SPOTKEY_DIR.path + "\\conf.json")
+    val SPOTKEY_CFG = File(SPOTKEY_DIR.path + "${OsUtil.separator}conf.json")
 
     init {
         if (!SPOTKEY_DIR.exists() && !SPOTKEY_DIR.mkdirs()) {
