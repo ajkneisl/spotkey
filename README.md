@@ -2,9 +2,19 @@
 SpotKey is a lightweight Spotify hot-key manager
 
 ## How to Use
-Execute the jar. It should then open your browser, and a window that should go over your browser. When you clcik accept on the Spotify page, it should redirect you to a place where you can view a code. Copy that code, and paste it into the opened window. **This requires Spotify Premium**
+Requirements:
+- A Spotify account **with Premium**
+- A Windows or Linux (untested) computer 
 
-You can define specific keystrokes in the SpotKey configuration folder. If you're on Windows, you can expect to find this at `%appdata%/spotkey/conf.json`. On Linux, this is at `/etc/spotkey/conf.json`. 
+1. Execute the Jar
+2. Focus on the newly opened browser window, and accept the Spotify oAuth page.
+3. Copy the code at the redirected tab.
+4. Paste the copied code into the SpotKey window.
+
+SpotKey should now be active! To close or modify the configuration, look for the small icon in the task bar (Windows). 
+
+## Configuration File
+The configuration file is used for defining specific hotkeys.
 
 The format for the configuration file should be 
 
@@ -30,5 +40,3 @@ There can also be detailed actions. These are defined by the same integers but a
 A keystroke should me in the format of *modifier* *key*. Like: `ctrl F`. Keys like `F` should be uppercase.
 
 You can view all default actions here: https://github.com/Shoganeko/spotkey/blob/master/src/main/resources/default.json
-
-If there's an issue that you know how to fix, please make a pull request. If you're confused, message me on discord at `sho#0001`.
